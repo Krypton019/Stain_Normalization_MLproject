@@ -1,0 +1,9 @@
+numpy
+scipy
+scikit-image
+scikit-learn
+POT
+wilds
+pandas
+tqdm
+torchvision

@@ -5,6 +5,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+import config as cfg
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -12,7 +13,8 @@ import matplotlib.pyplot as plt
 from src.data import load_wilds
 from src.ot_norm import OTNormalizer
 
-(ROOT / "figures").mkdir(exist_ok=True)
+cfg.FIGURES_DIR.mkdir(parents=True, exist_ok=True)
+
 ref_imgs, _, _ = load_wilds([0], 20, seed=0)               # reference = hospital 0
 norms = {m: OTNormalizer(mode=m).fit(ref_imgs) for m in ("balanced", "unbalanced")}
 
@@ -33,5 +35,5 @@ for r, h in enumerate([1, 2, 3, 4]):
             axes[r, c].set_title(title, fontsize=9)
     axes[r, 0].text(-0.1, 0.5, f"Hosp {h}", transform=axes[r, 0].transAxes,
                     ha="right", va="center", fontsize=9)
-fig.savefig(ROOT / "figures" / "ot_norm_demo.png", dpi=150, bbox_inches="tight")
-print("saved figures/ot_norm_demo.png")
+fig.savefig(cfg.FIGURES_DIR / "ot_norm_demo.png", dpi=150, bbox_inches="tight")
+print(f"saved {cfg.FIGURES_DIR / 'ot_norm_demo.png'}")

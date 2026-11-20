@@ -1,0 +1,4 @@
+# GitHub Pages config — serves docs/ as the site root.
+# No Jekyll processing needed; this file just tells Pages to use the folder.
+include:
+  - results

@@ -4,6 +4,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+import config as cfg
 import numpy as np
 import pandas as pd
 import matplotlib
@@ -15,8 +16,8 @@ from src import quantile as q
 from src import stainops as so
 from src.data import load_wilds
 
-(ROOT / "figures").mkdir(exist_ok=True)
-(ROOT / "results").mkdir(exist_ok=True)
+cfg.FIGURES_DIR.mkdir(parents=True, exist_ok=True)
+cfg.RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
 U = q.quantile_grid(1000)
 METHODS = ["affine_percentile", "macenko_scale", "affine_moment"]
@@ -70,8 +71,8 @@ ax2.set_ylabel("relative gap  W2^2 / Var(target)")
 ax2.set_title("Gap left by a straight line")
 ax2.legend(fontsize=8)
 fig.tight_layout()
-fig.savefig(ROOT / "figures" / "exp1_synthetic.png", dpi=150)
-print("saved figures/exp1_synthetic.png")
+fig.savefig(cfg.FIGURES_DIR / "exp1_synthetic.png", dpi=150)
+print(f"saved {cfg.FIGURES_DIR / 'exp1_synthetic.png'}")
 
 # ---------- (b) real: hematoxylin amounts of each hospital ----------
 N_PATCHES = 100
@@ -114,11 +115,11 @@ for ax, (name, M) in zip(axes, mats.items()):
             ax.text(t, s, f"{M[s, t]:.2f}", ha="center", va="center", fontsize=8,
                     color="w" if M[s, t] < 0.6 * vmax else "k")
 fig2.colorbar(im, ax=axes, shrink=0.8, label="relative gap")
-fig2.savefig(ROOT / "figures" / "exp1_hospital_heatmap.png", dpi=150, bbox_inches="tight")
-print("saved figures/exp1_hospital_heatmap.png")
+fig2.savefig(cfg.FIGURES_DIR / "exp1_hospital_heatmap.png", dpi=150, bbox_inches="tight")
+print(f"saved {cfg.FIGURES_DIR / 'exp1_hospital_heatmap.png'}")
 
-pd.DataFrame(rows).to_csv(ROOT / "results" / "exp1_quantile_gap.csv", index=False)
-print("saved results/exp1_quantile_gap.csv")
+pd.DataFrame(rows).to_csv(cfg.RESULTS_DIR / "exp1_quantile_gap.csv", index=False)
+print(f"saved {cfg.RESULTS_DIR / 'exp1_quantile_gap.csv'}")
 
 off = ~np.eye(5, dtype=bool)
 print("\nmean relative gap over hospital pairs (off-diagonal):")

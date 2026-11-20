@@ -1,6 +1,6 @@
 import numpy as np
-import ot
 import pytest
+ot = pytest.importorskip("ot")
 from src import sinkhorn as sk
 
 

@@ -2,8 +2,9 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))  # lets this script import from src/
+sys.path.insert(0, str(ROOT))
 
+import config as cfg
 import numpy as np
 import matplotlib
 matplotlib.use("Agg")
@@ -13,7 +14,7 @@ from src.data import load_wilds
 from src import stainops as so
 
 N_GRID, N_STATS = 8, 100
-(ROOT / "figures").mkdir(exist_ok=True)
+cfg.FIGURES_DIR.mkdir(parents=True, exist_ok=True)
 
 fig, axes = plt.subplots(5, N_GRID, figsize=(N_GRID * 1.6, 5 * 1.7))
 print(f"{'hospital':>8} {'mean H':>8} {'mean E':>8} {'mean OD':>8}  (tissue pixels only)")
@@ -42,5 +43,5 @@ for h in range(5):
     print(f"{h:>8} {np.mean(hs):>8.3f} {np.mean(es):>8.3f} {np.mean(ods):>8.3f}")
 
 fig.suptitle("CAMELYON17-WILDS: same task, five hospitals", y=0.94)
-fig.savefig(ROOT / "figures" / "hospitals.png", dpi=150, bbox_inches="tight")
-print("saved figures/hospitals.png")
+fig.savefig(cfg.FIGURES_DIR / "hospitals.png", dpi=150, bbox_inches="tight")
+print(f"saved {cfg.FIGURES_DIR / 'hospitals.png'}")

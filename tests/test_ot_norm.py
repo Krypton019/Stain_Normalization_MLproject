@@ -1,5 +1,6 @@
 import numpy as np
 import pytest
+pytest.importorskip("ot")
 from src import stainops as so
 from src.ot_norm import OTNormalizer
 

@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Stain Normalisation as Optimal Transport — CS1503</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg:       #0f1117;
+    --surface:  #1a1d27;
+    --border:   #2a2d3a;
+    --accent:   #6c8ff8;
+    --accent2:  #f87c6c;
+    --accent3:  #6cf8b8;
+    --text:     #e2e4ed;
+    --muted:    #7b7f96;
+    --radius:   10px;
+    --shadow:   0 4px 24px rgba(0,0,0,.45);
+    --methods:  #6c8ff8,#f87c6c,#f8d06c,#6cf8b8,#c46cf8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ── layout ── */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  header h1 { font-size: 1rem; font-weight: 600; letter-spacing: .01em; }
+  header span { color: var(--muted); font-size: .85rem; }
+  nav { display: flex; gap: 6px; }
+  nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: .85rem;
+    padding: 5px 12px;
+    border-radius: 6px;
+    transition: background .15s, color .15s;
+  }
+  nav a:hover, nav a.active { background: var(--border); color: var(--text); }
+
+  main { max-width: 1200px; margin: 0 auto; padding: 36px 24px 80px; }
+
+  section { margin-bottom: 56px; }
+  section h2 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text);
+  }
+  section h2 .pill {
+    font-size: .72rem;
+    font-weight: 500;
+    background: var(--border);
+    color: var(--muted);
+    padding: 2px 8px;
+    border-radius: 20px;
+    letter-spacing: .04em;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+  }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+  @media (max-width: 800px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    header { flex-direction: column; gap: 12px; }
+    nav { flex-wrap: wrap; justify-content: center; }
+  }
+
+  /* ── status banner ── */
+  #status-banner {
+    display: none;
+    background: #1e1a0e;
+    border: 1px solid #5c4a0a;
+    color: #f8d06c;
+    border-radius: var(--radius);
+    padding: 14px 20px;
+    margin-bottom: 32px;
+    font-size: .88rem;
+  }
+  #status-banner.visible { display: flex; align-items: center; gap: 10px; }
+
+  /* ── metric cards ── */
+  .metric-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 14px; margin-bottom: 28px; }
+  @media (max-width: 900px) { .metric-grid { grid-template-columns: repeat(3,1fr); } }
+  .metric-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    text-align: center;
+  }
+  .metric-card .method-name {
+    font-size: .78rem;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .metric-card .big-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.55rem;
+    font-weight: 500;
+    line-height: 1.1;
+  }
+  .metric-card .sub {
+    font-size: .78rem;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .metric-card.best { border-color: var(--accent); }
+
+  /* ── tabs ── */
+  .tabs { display: flex; gap: 4px; margin-bottom: 20px; }
+  .tab-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: .82rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: .15s;
+  }
+  .tab-btn:hover { background: var(--border); color: var(--text); }
+  .tab-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── table ── */
+  .results-table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+  .results-table th {
+    color: var(--muted);
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .results-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .82rem;
+  }
+  .results-table tr:last-child td { border-bottom: none; }
+  .results-table tr:hover td { background: rgba(255,255,255,.025); }
+  .badge {
+    display: inline-block;
+    padding: 1px 7px;
+    border-radius: 4px;
+    font-size: .72rem;
+    font-weight: 600;
+  }
+  .badge-blue  { background: #1a2a5e; color: var(--accent); }
+  .badge-green { background: #0e3022; color: var(--accent3); }
+  .badge-gold  { background: #2e1e06; color: #f8d06c; }
+
+  /* ── chart containers ── */
+  .chart-wrap { position: relative; }
+  .chart-wrap canvas { max-height: 320px; }
+  .chart-label {
+    font-size: .78rem;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 8px;
+  }
+
+  /* ── footer ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 20px 32px;
+    text-align: center;
+    color: var(--muted);
+    font-size: .82rem;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+
+  /* ── no-data placeholder ── */
+  .no-data {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--muted);
+    font-size: .9rem;
+  }
+  .no-data .icon { font-size: 2rem; display: block; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Stain Normalisation &mdash; Optimal Transport &nbsp;|&nbsp; CS1503</h1>
+  </div>
+  <nav>
+    <a href="#overview"   class="active" onclick="scrollTo(this)">Overview</a>
+    <a href="#curves"              onclick="scrollTo(this)">Training curves</a>
+    <a href="#exp1"                onclick="scrollTo(this)">Exp 1 · Quantile gap</a>
+    <a href="#exp2"                onclick="scrollTo(this)">Exp 2 · Synth shift</a>
+    <a href="#about"               onclick="scrollTo(this)">About</a>
+  </nav>
+  <span id="last-updated"></span>
+</header>
+
+<main>
+
+  <!-- status banner -->
+  <div id="status-banner">
+    <span>⚠</span>
+    <span>Training results not yet available — run <code>scripts/train.py</code> on Kaggle and push
+    <code>results/*.json</code> to this repo. Experiment figures are shown below.</span>
+  </div>
+
+  <!-- ── OVERVIEW ── -->
+  <section id="overview">
+    <h2>Overview <span class="pill">CAMELYON17-WILDS · Hospital 2 test</span></h2>
+
+    <!-- metric cards filled by JS -->
+    <div class="metric-grid" id="metric-cards"></div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="chart-wrap"><canvas id="chart-auc-bar"></canvas></div>
+        <div class="chart-label">Test AUC — mean ± std over 3 seeds (best val-AUC epoch)</div>
+      </div>
+      <div class="card">
+        <div class="chart-wrap"><canvas id="chart-acc-bar"></canvas></div>
+        <div class="chart-label">Test Accuracy — mean ± std over 3 seeds</div>
+      </div>
+    </div>
+
+    <!-- full results table -->
+    <div class="card" style="margin-top:20px">
+      <table class="results-table" id="results-table">
+        <thead>
+          <tr>
+            <th>Method</th><th>Seeds</th><th>Best epoch</th>
+            <th>Val AUC</th><th>Test AUC</th><th>Test Acc</th><th>Runtime</th>
+          </tr>
+        </thead>
+        <tbody id="results-tbody">
+          <tr><td colspan="7" class="no-data">
+            <span class="icon">📊</span>Push training results to see the table.
+          </td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ── TRAINING CURVES ── -->
+  <section id="curves">
+    <h2>Training curves <span class="pill">per method · seed 0</span></h2>
+
+    <div class="tabs" id="curve-tabs"></div>
+    <div class="grid-2" id="curve-panels">
+      <div class="card no-data"><span class="icon">📈</span>Push training results to see curves.</div>
+    </div>
+  </section>
+
+  <!-- ── EXP 1 ── -->
+  <section id="exp1">
+    <h2>Experiment 1 — Quantile gap <span class="pill">affine approximation error</span></h2>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(this,'exp1-synth')">Synthetic (Gamma)</button>
+      <button class="tab-btn"       onclick="switchTab(this,'exp1-hosp')">Hospital pairs</button>
+    </div>
+
+    <div class="tab-panel active" id="exp1-synth">
+      <div class="grid-2">
+        <div class="card">
+          <div class="chart-wrap"><canvas id="chart-exp1-gap"></canvas></div>
+          <div class="chart-label">Relative W₂² gap vs skewness difference between source and target</div>
+        </div>
+        <div class="card" style="display:flex;align-items:center;justify-content:center;">
+          <img src="../figures/exp1_synthetic.png"
+               onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='figures/exp1_synthetic.png';}else{this.style.display='none';(this.nextElementSibling||this.nextSibling).style.display='block';}"
+               style="max-width:100%;border-radius:6px"/>
+          <div class="no-data" style="display:none"><span class="icon">🖼</span>Run exp1_quantile_gap.py to generate figure.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="exp1-hosp">
+      <div class="grid-2">
+        <div class="card">
+          <div class="chart-wrap"><canvas id="chart-exp1-heatmap"></canvas></div>
+          <div class="chart-label">Mean relative gap per method (off-diagonal hospital pairs)</div>
+        </div>
+        <div class="card" style="display:flex;align-items:center;justify-content:center;">
+          <img src="../figures/exp1_hospital_heatmap.png"
+               onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='figures/exp1_hospital_heatmap.png';}else{this.style.display='none';(this.nextElementSibling||this.nextSibling).style.display='block';}"
+               style="max-width:100%;border-radius:6px"/>
+          <div class="no-data" style="display:none"><span class="icon">🖼</span>Run exp1_quantile_gap.py to generate figure.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── EXP 2 ── -->
+  <section id="exp2">
+    <h2>Experiment 2 — Synthetic stain shift <span class="pill">RMSE &amp; SSIM vs ground truth</span></h2>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(this,'exp2-random')">Random split</button>
+      <button class="tab-btn"       onclick="switchTab(this,'exp2-mismatch')">Mismatch split</button>
+    </div>
+
+    <div class="tab-panel active" id="exp2-random">
+      <div class="grid-2">
+        <div class="card">
+          <div class="chart-wrap"><canvas id="chart-exp2-random-rmse"></canvas></div>
+          <div class="chart-label">RMSE vs stain-strength factor s (lower is better)</div>
+        </div>
+        <div class="card">
+          <div class="chart-wrap"><canvas id="chart-exp2-random-ssim"></canvas></div>
+          <div class="chart-label">SSIM vs stain-strength factor s (higher is better)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="exp2-mismatch">
+      <div class="grid-2">
+        <div class="card">
+          <div class="chart-wrap"><canvas id="chart-exp2-mismatch-rmse"></canvas></div>
+          <div class="chart-label">RMSE vs stain-strength factor s (lower is better)</div>
+        </div>
+        <div class="card">
+          <div class="chart-wrap"><canvas id="chart-exp2-mismatch-ssim"></canvas></div>
+          <div class="chart-label">SSIM vs stain-strength factor s (higher is better)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ABOUT ── -->
+  <section id="about">
+    <h2>About</h2>
+    <div class="card" style="line-height:1.9">
+      <p><strong>Project:</strong> Stain Normalisation as Structure-Preserving Optimal Transport in OD Space &mdash; CS1503 course project.</p>
+      <p style="margin-top:10px"><strong>Methods compared:</strong> No normalisation &nbsp;·&nbsp; Reinhard &nbsp;·&nbsp; Macenko &nbsp;·&nbsp; OT-balanced &nbsp;·&nbsp; OT-unbalanced</p>
+      <p style="margin-top:10px"><strong>Dataset:</strong> CAMELYON17-WILDS — 96×96 patches from 5 hospitals. Train: hospitals 0,3,4 · Val: hospital 1 · Test: hospital 2.</p>
+      <p style="margin-top:10px"><strong>Classifier:</strong> ResNet-18 trained from scratch, AdamW + cosine LR, mixed precision. Best epoch selected by val AUC.</p>
+      <p style="margin-top:10px"><strong>Code:</strong>
+        <a href="https://github.com/YOUR_USERNAME/Stain_Normalization_MLproject" target="_blank">GitHub →</a>
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  CS1503 · Stain Normalisation as Optimal Transport ·
+  <a href="https://github.com/YOUR_USERNAME/Stain_Normalization_MLproject">GitHub</a>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════════════
+const METHODS   = ["none","reinhard","macenko","ot_bal","ot_unbal"];
+const METHOD_LABELS = {
+  none:     "No norm",
+  reinhard: "Reinhard",
+  macenko:  "Macenko",
+  ot_bal:   "OT-balanced",
+  ot_unbal: "OT-unbalanced",
+};
+const METHOD_COLORS = ["#6c8ff8","#f87c6c","#f8d06c","#6cf8b8","#c46cf8"];
+const SEEDS     = [0,1,2];
+const RESULTS_DIR = "../results";
+
+// ═══════════════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════════════
+function mean(arr){ return arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : NaN; }
+function std(arr){
+  if(arr.length<2) return NaN;
+  const m=mean(arr);
+  return Math.sqrt(arr.reduce((s,x)=>s+(x-m)**2,0)/(arr.length-1));
+}
+function fmt(v,d=3){ return isNaN(v)||v===null ? "—" : v.toFixed(d); }
+
+async function fetchJSON(url){
+  try {
+    let r = await fetch(url);
+    if (!r.ok && url.startsWith("../")) r = await fetch(url.slice(3));
+    return r && r.ok ? await r.json() : null;
+  } catch(e) {
+    if (url.startsWith("../")) {
+      try {
+        const r2 = await fetch(url.slice(3));
+        return r2 && r2.ok ? await r2.json() : null;
+      } catch(_) {}
+    }
+    return null;
+  }
+}
+async function fetchCSV(url){
+  try {
+    let r = await fetch(url);
+    if (!r.ok && url.startsWith("../")) r = await fetch(url.slice(3));
+    return r && r.ok ? await r.text() : null;
+  } catch(e) {
+    if (url.startsWith("../")) {
+      try {
+        const r2 = await fetch(url.slice(3));
+        return r2 && r2.ok ? await r2.text() : null;
+      } catch(_) {}
+    }
+    return null;
+  }
+}
+
+function scrollTo(el){
+  event.preventDefault();
+  document.querySelectorAll("nav a").forEach(a=>a.classList.remove("active"));
+  el.classList.add("active");
+  const target=document.querySelector(el.getAttribute("href"));
+  if(target) target.scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+function switchTab(btn, panelId){
+  const section=btn.closest("section");
+  section.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+  section.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
+  btn.classList.add("active");
+  document.getElementById(panelId).classList.add("active");
+}
+
+function darkChartDefaults(){
+  Chart.defaults.color="#7b7f96";
+  Chart.defaults.borderColor="#2a2d3a";
+  Chart.defaults.font.family="'Inter',sans-serif";
+  Chart.defaults.font.size=12;
+}
+
+// ═══════════════════════════════════════════════════════
+// LOAD TRAINING RESULTS
+// ═══════════════════════════════════════════════════════
+async function loadTrainingResults(){
+  // Try to load every {method}_seed{seed}.json
+  const all={};  // method -> [{...json}]
+  let anyFound=false;
+
+  await Promise.all(METHODS.map(async m=>{
+    all[m]=[];
+    await Promise.all(SEEDS.map(async s=>{
+      const d=await fetchJSON(`${RESULTS_DIR}/${m}_seed${s}.json`);
+      if(d){ all[m].push(d); anyFound=true; }
+    }));
+  }));
+
+  return { all, anyFound };
+}
+
+// ═══════════════════════════════════════════════════════
+// OVERVIEW SECTION
+// ═══════════════════════════════════════════════════════
+function buildOverview(all, anyFound){
+  if(!anyFound){
+    document.getElementById("status-banner").classList.add("visible");
+    return;
+  }
+  document.getElementById("last-updated").textContent =
+    "Last updated: " + new Date().toLocaleDateString();
+
+  // Compute per-method stats
+  const stats=METHODS.map(m=>{
+    const runs=all[m];
+    const testAucs  = runs.map(r=>r.test_auc).filter(v=>v!=null);
+    const testAccs  = runs.map(r=>r.test_acc).filter(v=>v!=null);
+    const valAucs   = runs.map(r=>r.val_auc).filter(v=>v!=null);
+    const runtimes  = runs.map(r=>r.runtime_s).filter(v=>v!=null);
+    return {
+      method:   m,
+      n:        runs.length,
+      testAucMean: mean(testAucs),
+      testAucStd:  std(testAucs),
+      testAccMean: mean(testAccs),
+      testAccStd:  std(testAccs),
+      valAucMean:  mean(valAucs),
+      bestEpoch:   runs.length ? Math.round(mean(runs.map(r=>r.best_epoch))) : null,
+      runtimeMin:  runs.length ? mean(runtimes)/60 : null,
+    };
+  });
+
+  const bestIdx = stats.reduce((bi,s,i)=>
+    (!isNaN(s.testAucMean)&&(isNaN(stats[bi].testAucMean)||s.testAucMean>stats[bi].testAucMean))?i:bi, 0);
+
+  // Metric cards
+  const cards=document.getElementById("metric-cards");
+  cards.innerHTML="";
+  stats.forEach((s,i)=>{
+    const isBest=(i===bestIdx)&&!isNaN(s.testAucMean);
+    cards.innerHTML+=`
+      <div class="metric-card${isBest?" best":""}">
+        <div class="method-name">${METHOD_LABELS[s.method]}</div>
+        <div class="big-num" style="color:${METHOD_COLORS[i]}">${fmt(s.testAucMean)}</div>
+        <div class="sub">Test AUC${s.n>1?` ±${fmt(s.testAucStd)}`:""}</div>
+        ${isBest?'<div class="sub" style="color:#6cf8b8;margin-top:4px">★ best</div>':""}
+      </div>`;
+  });
+
+  // Bar charts
+  makeBarChart("chart-auc-bar", stats, "testAucMean","testAucStd","Test AUC");
+  makeBarChart("chart-acc-bar", stats, "testAccMean","testAccStd","Test Accuracy");
+
+  // Table
+  const tbody=document.getElementById("results-tbody");
+  tbody.innerHTML="";
+  stats.forEach((s,i)=>{
+    if(s.n===0) return;
+    const isBest=(i===bestIdx);
+    tbody.innerHTML+=`
+      <tr>
+        <td><span class="badge badge-blue">${METHOD_LABELS[s.method]}</span></td>
+        <td>${s.n}</td>
+        <td>${s.bestEpoch??'—'}</td>
+        <td>${fmt(s.valAucMean)}${s.n>1?` <span style="color:var(--muted)">±${fmt(s.valAucStd)}</span>`:""}</td>
+        <td>${fmt(s.testAucMean)}${s.n>1?` <span style="color:var(--muted)">±${fmt(s.testAucStd)}</span>`:""} ${isBest?'<span class="badge badge-green">best</span>':""}</td>
+        <td>${fmt(s.testAccMean)}${s.n>1?` <span style="color:var(--muted)">±${fmt(s.testAccStd)}</span>`:""}</td>
+        <td>${s.runtimeMin?fmt(s.runtimeMin,1)+" min":"—"}</td>
+      </tr>`;
+  });
+}
+
+function makeBarChart(id, stats, meanKey, stdKey, label){
+  const labels  = stats.filter(s=>!isNaN(s[meanKey])).map(s=>METHOD_LABELS[s.method]);
+  const values  = stats.filter(s=>!isNaN(s[meanKey])).map(s=>s[meanKey]);
+  const errors  = stats.filter(s=>!isNaN(s[meanKey])).map(s=>isNaN(s[stdKey])?0:s[stdKey]);
+  const colors  = METHODS.filter((_,i)=>!isNaN(stats[i][meanKey])).map((_,i)=>METHOD_COLORS[METHODS.findIndex(m=>m===stats[METHODS.indexOf(m)].method)]);
+
+  if(!values.length) return;
+  const colorMap={};
+  stats.forEach((s,i)=>{ colorMap[METHOD_LABELS[s.method]]=METHOD_COLORS[i]; });
+
+  new Chart(document.getElementById(id),{
+    type:"bar",
+    data:{
+      labels,
+      datasets:[{
+        label,
+        data: values,
+        backgroundColor: labels.map(l=>colorMap[l]+"99"),
+        borderColor:     labels.map(l=>colorMap[l]),
+        borderWidth: 2,
+        errorBars: errors.reduce((o,e,i)=>{o[labels[i]]={plus:e,minus:e};return o;},{}),
+      }]
+    },
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          callbacks:{
+            label: ctx=>{
+              const e=errors[ctx.dataIndex];
+              return ` ${fmt(ctx.raw)}${e?" ± "+fmt(e):""}`;
+            }
+          }
+        }
+      },
+      scales:{
+        y:{
+          beginAtZero:false,
+          ticks:{color:"#7b7f96"},
+          grid:{color:"#2a2d3a"},
+        },
+        x:{ticks:{color:"#7b7f96"},grid:{display:false}}
+      }
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// TRAINING CURVES
+// ═══════════════════════════════════════════════════════
+function buildCurves(all, anyFound){
+  if(!anyFound) return;
+  const tabsEl=document.getElementById("curve-tabs");
+  const panelsEl=document.getElementById("curve-panels");
+  tabsEl.innerHTML="";
+  panelsEl.innerHTML="";
+
+  METHODS.forEach((m,mi)=>{
+    const runs=all[m];
+    if(!runs.length) return;
+
+    // Pick seed 0 run
+    const run=runs.find(r=>r.seed===0)||runs[0];
+    if(!run?.history?.length) return;
+
+    const isFirst=tabsEl.children.length===0;
+    const panelId=`curve-${m}`;
+
+    tabsEl.innerHTML+=`<button class="tab-btn${isFirst?" active":""}" onclick="switchTab(this,'${panelId}')">${METHOD_LABELS[m]}</button>`;
+
+    const epochs=run.history.map(h=>h.epoch);
+    const valAuc=run.history.map(h=>h.val_auc);
+    const teAuc =run.history.map(h=>h.te_auc);
+    const trLoss=run.history.map(h=>h.tr_loss);
+
+    panelsEl.innerHTML+=`
+      <div class="tab-panel${isFirst?" active":""}" id="${panelId}">
+        <div class="grid-2">
+          <div class="card">
+            <div class="chart-wrap"><canvas id="cc-auc-${m}"></canvas></div>
+            <div class="chart-label">AUC per epoch — seed ${run.seed}</div>
+          </div>
+          <div class="card">
+            <div class="chart-wrap"><canvas id="cc-loss-${m}"></canvas></div>
+            <div class="chart-label">Training loss per epoch</div>
+          </div>
+        </div>
+      </div>`;
+  });
+
+  // Draw charts after DOM is updated
+  requestAnimationFrame(()=>{
+    METHODS.forEach((m,mi)=>{
+      const run=all[m].find(r=>r.seed===0)||all[m][0];
+      if(!run?.history?.length) return;
+      const epochs=run.history.map(h=>h.epoch);
+      const valAuc=run.history.map(h=>h.val_auc);
+      const teAuc =run.history.map(h=>h.te_auc);
+      const trLoss=run.history.map(h=>h.tr_loss);
+      const bestEp=run.best_epoch;
+
+      new Chart(document.getElementById(`cc-auc-${m}`),{
+        type:"line",
+        data:{
+          labels:epochs,
+          datasets:[
+            {label:"Val AUC",   data:valAuc, borderColor:METHOD_COLORS[mi], backgroundColor:"transparent", tension:.3, pointRadius:3},
+            {label:"Test AUC",  data:teAuc,  borderColor:METHOD_COLORS[mi]+"77", backgroundColor:"transparent", tension:.3, borderDash:[4,3], pointRadius:2},
+          ]
+        },
+        options:{
+          responsive:true,
+          plugins:{
+            legend:{labels:{color:"#7b7f96",font:{size:11}}},
+            annotation:{
+              annotations:{
+                bestLine:{type:"line",xMin:bestEp,xMax:bestEp,borderColor:"#f8d06c88",borderWidth:2,borderDash:[4,3],
+                  label:{content:"best",display:true,color:"#f8d06c",font:{size:10}}}
+              }
+            }
+          },
+          scales:{
+            y:{min:0,max:1,ticks:{color:"#7b7f96"},grid:{color:"#2a2d3a"}},
+            x:{ticks:{color:"#7b7f96"},grid:{display:false}}
+          }
+        }
+      });
+
+      new Chart(document.getElementById(`cc-loss-${m}`),{
+        type:"line",
+        data:{labels:epochs,datasets:[
+          {label:"Train loss",data:trLoss,borderColor:METHOD_COLORS[mi],backgroundColor:"transparent",tension:.3,pointRadius:3}
+        ]},
+        options:{
+          responsive:true,
+          plugins:{legend:{labels:{color:"#7b7f96",font:{size:11}}}},
+          scales:{
+            y:{ticks:{color:"#7b7f96"},grid:{color:"#2a2d3a"}},
+            x:{ticks:{color:"#7b7f96"},grid:{display:false}}
+          }
+        }
+      });
+    });
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// EXP 1  — quantile gap
+// ═══════════════════════════════════════════════════════
+async function buildExp1(){
+  const text=await fetchCSV(`${RESULTS_DIR}/exp1_quantile_gap.csv`);
+  if(!text) return;
+  const rows=Papa.parse(text,{header:true,dynamicTyping:true}).data.filter(r=>r.dataset);
+
+  // Gap vs skew chart
+  const methods=["affine_percentile","macenko_scale","affine_moment"];
+  const mLabels={"affine_percentile":"Affine percentile","macenko_scale":"Macenko p99","affine_moment":"Moment (Reinhard)"};
+  const mColors=["#6c8ff8","#f87c6c","#f8d06c"];
+  const synthRows=rows.filter(r=>r.dataset==="synthetic"&&r.metric==="rel_w2sq");
+  const skewRows =rows.filter(r=>r.dataset==="synthetic"&&r.metric==="skew_diff");
+  const skews=skewRows.map(r=>r.value).sort((a,b)=>a-b);
+
+  const datasets=methods.map((m,i)=>{
+    const pts=synthRows.filter(r=>r.method===m).sort((a,b)=>parseFloat(a.split.split("=")[1])-parseFloat(b.split.split("=")[1]));
+    return{label:mLabels[m],data:pts.map(r=>r.value),borderColor:mColors[i],backgroundColor:"transparent",tension:.3,pointRadius:2};
+  });
+
+  new Chart(document.getElementById("chart-exp1-gap"),{
+    type:"line",
+    data:{labels:skews.map(v=>v.toFixed(2)),datasets},
+    options:{
+      responsive:true,
+      plugins:{legend:{labels:{color:"#7b7f96",font:{size:11}}}},
+      scales:{
+        x:{title:{display:true,text:"skew(target)−skew(source)",color:"#7b7f96"},ticks:{color:"#7b7f96",maxTicksLimit:8},grid:{display:false}},
+        y:{title:{display:true,text:"Relative W₂² gap",color:"#7b7f96"},ticks:{color:"#7b7f96"},grid:{color:"#2a2d3a"}}
+      }
+    }
+  });
+
+  // Hospital heatmap — bar chart of mean off-diagonal gap per method
+  const hospRows=rows.filter(r=>r.dataset==="wilds"&&r.metric==="rel_w2sq");
+  const offDiag=hospRows.filter(r=>{
+    const [src,tgt]=r.split.replace("hosp","").split("->").map(Number);
+    return src!==tgt;
+  });
+  const meanGaps=methods.map(m=>mean(offDiag.filter(r=>r.method===m).map(r=>r.value)));
+
+  new Chart(document.getElementById("chart-exp1-heatmap"),{
+    type:"bar",
+    data:{
+      labels:methods.map(m=>mLabels[m]),
+      datasets:[{
+        label:"Mean relative gap (off-diagonal)",
+        data:meanGaps,
+        backgroundColor:mColors.map(c=>c+"99"),
+        borderColor:mColors,
+        borderWidth:2
+      }]
+    },
+    options:{
+      responsive:true,
+      plugins:{legend:{display:false}},
+      scales:{
+        y:{title:{display:true,text:"Relative W₂² gap",color:"#7b7f96"},ticks:{color:"#7b7f96"},grid:{color:"#2a2d3a"}},
+        x:{ticks:{color:"#7b7f96"},grid:{display:false}}
+      }
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// EXP 2  — synthetic shift
+// ═══════════════════════════════════════════════════════
+async function buildExp2(){
+  for(const mode of ["random","mismatch"]){
+    const text=await fetchCSV(`${RESULTS_DIR}/exp2_synthetic_${mode}.csv`);
+    if(!text) continue;
+    const rows=Papa.parse(text,{header:true,dynamicTyping:true}).data.filter(r=>r.dataset);
+
+    const methods=[...new Set(rows.map(r=>r.method))];
+    const sVals  =[...new Set(rows.map(r=>r.split))].sort();
+    const palette=["#6c8ff8","#f87c6c","#f8d06c","#6cf8b8","#c46cf8","#f8a06c","#6cf8f8"];
+
+    for(const metric of ["rmse","ssim"]){
+      const canvasId=`chart-exp2-${mode}-${metric}`;
+      const metricRows=rows.filter(r=>r.metric===metric);
+      const datasets=methods.map((m,i)=>{
+        const pts=sVals.map(s=>{
+          const vs=metricRows.filter(r=>r.method===m&&r.split===s).map(r=>r.value);
+          return mean(vs);
+        });
+        return{label:m,data:pts,borderColor:palette[i%palette.length],backgroundColor:"transparent",tension:.3,pointRadius:3};
+      });
+      new Chart(document.getElementById(canvasId),{
+        type:"line",
+        data:{labels:sVals.map(s=>s.replace("s=","")),datasets},
+        options:{
+          responsive:true,
+          plugins:{legend:{labels:{color:"#7b7f96",font:{size:10},boxWidth:12}}},
+          scales:{
+            x:{title:{display:true,text:"Stain-strength factor s",color:"#7b7f96"},ticks:{color:"#7b7f96"},grid:{display:false}},
+            y:{title:{display:true,text:metric.toUpperCase(),color:"#7b7f96"},ticks:{color:"#7b7f96"},grid:{color:"#2a2d3a"}}
+          }
+        }
+      });
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════════════════════
+(async()=>{
+  darkChartDefaults();
+  const {all, anyFound} = await loadTrainingResults();
+  buildOverview(all, anyFound);
+  buildCurves(all, anyFound);
+  await buildExp1();
+  await buildExp2();
+})();
+</script>
+</body>
+</html>

@@ -2,3 +2,15 @@
 data/
 results/cache/
 __pycache__/
+*.pyc
+*.egg-info/
+.vscode/
+# Stage A shard cache (Kaggle working dir; keep out of git)
+cache/
+*.npz
+# Keep docs/ results and figures in git (served by GitHub Pages)
+!docs/results/
+!docs/results/*.json
+!docs/results/*.csv
+!docs/figures/
+!docs/figures/*.png

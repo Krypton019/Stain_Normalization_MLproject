@@ -4,6 +4,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+import config as cfg
 import numpy as np
 import pandas as pd
 import matplotlib
@@ -21,8 +22,8 @@ N_POOL, N_REF, N_TEST = 300, 20, 100
 S_GRID = [0.6, 0.8, 1.0, 1.2, 1.4]
 RHOS = [0.1, 1.0, 10.0, 100.0]
 
-(ROOT / "results").mkdir(exist_ok=True)
-(ROOT / "figures").mkdir(exist_ok=True)
+cfg.RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+cfg.FIGURES_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def base_H(img):
@@ -126,7 +127,7 @@ for si, s in enumerate(S_GRID):
     print(f"finished s={s}")
 
 df = pd.DataFrame(rows)
-df.to_csv(ROOT / "results" / f"exp2_synthetic_{MODE}.csv", index=False)   # 'seed' = patch index
+df.to_csv(cfg.RESULTS_DIR / f"exp2_synthetic_{MODE}.csv", index=False)
 
 print("\nMean RMSE vs ground truth (lower is better):")
 print(df[df.metric == "rmse"].groupby(["method", "split"]).value.mean().unstack("split").round(1).to_string())
@@ -150,5 +151,5 @@ for ax, metric, label in zip(axes, ["rmse", "ssim"],
     ax.set_title(f"Synthetic shift ({MODE})")
 axes[0].legend(fontsize=7)
 fig.tight_layout()
-fig.savefig(ROOT / "figures" / f"exp2_synthetic_{MODE}.png", dpi=150)
-print(f"saved figures/exp2_synthetic_{MODE}.png")
+fig.savefig(cfg.FIGURES_DIR / f"exp2_synthetic_{MODE}.png", dpi=150)
+print(f"saved {cfg.FIGURES_DIR / f'exp2_synthetic_{MODE}.png'}")

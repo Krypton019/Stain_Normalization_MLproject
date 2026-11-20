@@ -5,6 +5,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+import config as cfg
 import numpy as np
 from src.data import load_wilds
 from src import stainops as so
