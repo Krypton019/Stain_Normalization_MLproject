@@ -1,0 +1,187 @@
+{
+  "method": "macenko",
+  "seed": 2,
+  "best_epoch": 7,
+  "val_acc": 0.8592,
+  "val_auc": 0.94246,
+  "test_acc": 0.9344,
+  "test_auc": 0.98269,
+  "runtime_s": 332.9,
+  "history": [
+    {
+      "epoch": 1,
+      "tr_loss": 0.23616,
+      "tr_acc": 0.90685,
+      "val_loss": 0.9418,
+      "val_acc": 0.6836,
+      "val_auc": 0.88148,
+      "te_loss": 0.47457,
+      "te_acc": 0.8168,
+      "te_auc": 0.93675
+    },
+    {
+      "epoch": 2,
+      "tr_loss": 0.14355,
+      "tr_acc": 0.9465,
+      "val_loss": 0.55241,
+      "val_acc": 0.8064,
+      "val_auc": 0.88143,
+      "te_loss": 0.38505,
+      "te_acc": 0.8694,
+      "te_auc": 0.95426
+    },
+    {
+      "epoch": 3,
+      "tr_loss": 0.12428,
+      "tr_acc": 0.95313,
+      "val_loss": 0.43741,
+      "val_acc": 0.8621,
+      "val_auc": 0.93751,
+      "te_loss": 0.41724,
+      "te_acc": 0.8594,
+      "te_auc": 0.97252
+    },
+    {
+      "epoch": 4,
+      "tr_loss": 0.11013,
+      "tr_acc": 0.95933,
+      "val_loss": 0.55949,
+      "val_acc": 0.8186,
+      "val_auc": 0.91833,
+      "te_loss": 0.24007,
+      "te_acc": 0.91387,
+      "te_auc": 0.97371
+    },
+    {
+      "epoch": 5,
+      "tr_loss": 0.10127,
+      "tr_acc": 0.96217,
+      "val_loss": 0.7535,
+      "val_acc": 0.768,
+      "val_auc": 0.92001,
+      "te_loss": 0.22774,
+      "te_acc": 0.9166,
+      "te_auc": 0.97593
+    },
+    {
+      "epoch": 6,
+      "tr_loss": 0.09076,
+      "tr_acc": 0.96732,
+      "val_loss": 0.79808,
+      "val_acc": 0.7844,
+      "val_auc": 0.91459,
+      "te_loss": 0.20839,
+      "te_acc": 0.92993,
+      "te_auc": 0.97784
+    },
+    {
+      "epoch": 7,
+      "tr_loss": 0.08627,
+      "tr_acc": 0.9686,
+      "val_loss": 0.41733,
+      "val_acc": 0.8592,
+      "val_auc": 0.94246,
+      "te_loss": 0.17743,
+      "te_acc": 0.9344,
+      "te_auc": 0.98269
+    },
+    {
+      "epoch": 8,
+      "tr_loss": 0.07861,
+      "tr_acc": 0.97173,
+      "val_loss": 0.54083,
+      "val_acc": 0.8592,
+      "val_auc": 0.93166,
+      "te_loss": 0.30296,
+      "te_acc": 0.90453,
+      "te_auc": 0.97513
+    },
+    {
+      "epoch": 9,
+      "tr_loss": 0.07148,
+      "tr_acc": 0.97402,
+      "val_loss": 0.50145,
+      "val_acc": 0.8522,
+      "val_auc": 0.9339,
+      "te_loss": 0.32161,
+      "te_acc": 0.89907,
+      "te_auc": 0.9807
+    },
+    {
+      "epoch": 10,
+      "tr_loss": 0.06674,
+      "tr_acc": 0.97582,
+      "val_loss": 0.69425,
+      "val_acc": 0.8082,
+      "val_auc": 0.93315,
+      "te_loss": 0.17041,
+      "te_acc": 0.9364,
+      "te_auc": 0.98342
+    },
+    {
+      "epoch": 11,
+      "tr_loss": 0.06105,
+      "tr_acc": 0.97815,
+      "val_loss": 1.0464,
+      "val_acc": 0.7586,
+      "val_auc": 0.91808,
+      "te_loss": 0.21112,
+      "te_acc": 0.93487,
+      "te_auc": 0.97997
+    },
+    {
+      "epoch": 12,
+      "tr_loss": 0.05522,
+      "tr_acc": 0.98038,
+      "val_loss": 0.85605,
+      "val_acc": 0.7962,
+      "val_auc": 0.92905,
+      "te_loss": 0.1674,
+      "te_acc": 0.94553,
+      "te_auc": 0.98645
+    },
+    {
+      "epoch": 13,
+      "tr_loss": 0.05064,
+      "tr_acc": 0.98193,
+      "val_loss": 0.73952,
+      "val_acc": 0.821,
+      "val_auc": 0.93297,
+      "te_loss": 0.18412,
+      "te_acc": 0.94253,
+      "te_auc": 0.98346
+    },
+    {
+      "epoch": 14,
+      "tr_loss": 0.04758,
+      "tr_acc": 0.98285,
+      "val_loss": 0.69115,
+      "val_acc": 0.8305,
+      "val_auc": 0.93204,
+      "te_loss": 0.16651,
+      "te_acc": 0.94493,
+      "te_auc": 0.98597
+    },
+    {
+      "epoch": 15,
+      "tr_loss": 0.04462,
+      "tr_acc": 0.98407,
+      "val_loss": 0.73493,
+      "val_acc": 0.8299,
+      "val_auc": 0.93214,
+      "te_loss": 0.1672,
+      "te_acc": 0.9464,
+      "te_auc": 0.98633
+    }
+  ],
+  "args": {
+    "backbone": "resnet18",
+    "epochs": 15,
+    "batch_size": 256,
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "lr_sched": "cosine",
+    "color_aug": false,
+    "subsample": null
+  }
+}

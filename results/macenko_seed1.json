@@ -1,0 +1,187 @@
+{
+  "method": "macenko",
+  "seed": 1,
+  "best_epoch": 8,
+  "val_acc": 0.8604,
+  "val_auc": 0.9465,
+  "test_acc": 0.91787,
+  "test_auc": 0.9784,
+  "runtime_s": 333.3,
+  "history": [
+    {
+      "epoch": 1,
+      "tr_loss": 0.21851,
+      "tr_acc": 0.9142,
+      "val_loss": 0.57633,
+      "val_acc": 0.7951,
+      "val_auc": 0.92824,
+      "te_loss": 0.30024,
+      "te_acc": 0.88027,
+      "te_auc": 0.96766
+    },
+    {
+      "epoch": 2,
+      "tr_loss": 0.14344,
+      "tr_acc": 0.94618,
+      "val_loss": 0.4899,
+      "val_acc": 0.8133,
+      "val_auc": 0.90317,
+      "te_loss": 0.24774,
+      "te_acc": 0.90413,
+      "te_auc": 0.96339
+    },
+    {
+      "epoch": 3,
+      "tr_loss": 0.12568,
+      "tr_acc": 0.95423,
+      "val_loss": 0.61415,
+      "val_acc": 0.7636,
+      "val_auc": 0.91047,
+      "te_loss": 0.36501,
+      "te_acc": 0.83147,
+      "te_auc": 0.9409
+    },
+    {
+      "epoch": 4,
+      "tr_loss": 0.10995,
+      "tr_acc": 0.95998,
+      "val_loss": 0.91612,
+      "val_acc": 0.7236,
+      "val_auc": 0.9014,
+      "te_loss": 0.18363,
+      "te_acc": 0.9328,
+      "te_auc": 0.98003
+    },
+    {
+      "epoch": 5,
+      "tr_loss": 0.09525,
+      "tr_acc": 0.96582,
+      "val_loss": 0.40551,
+      "val_acc": 0.8691,
+      "val_auc": 0.94456,
+      "te_loss": 0.29543,
+      "te_acc": 0.9018,
+      "te_auc": 0.97326
+    },
+    {
+      "epoch": 6,
+      "tr_loss": 0.09019,
+      "tr_acc": 0.9674,
+      "val_loss": 0.65765,
+      "val_acc": 0.8233,
+      "val_auc": 0.93275,
+      "te_loss": 0.49646,
+      "te_acc": 0.8568,
+      "te_auc": 0.97366
+    },
+    {
+      "epoch": 7,
+      "tr_loss": 0.08315,
+      "tr_acc": 0.97018,
+      "val_loss": 0.49673,
+      "val_acc": 0.8522,
+      "val_auc": 0.93344,
+      "te_loss": 0.25753,
+      "te_acc": 0.91053,
+      "te_auc": 0.97219
+    },
+    {
+      "epoch": 8,
+      "tr_loss": 0.07626,
+      "tr_acc": 0.97332,
+      "val_loss": 0.43327,
+      "val_acc": 0.8604,
+      "val_auc": 0.9465,
+      "te_loss": 0.23784,
+      "te_acc": 0.91787,
+      "te_auc": 0.9784
+    },
+    {
+      "epoch": 9,
+      "tr_loss": 0.07172,
+      "tr_acc": 0.97425,
+      "val_loss": 0.52118,
+      "val_acc": 0.8357,
+      "val_auc": 0.93494,
+      "te_loss": 0.19856,
+      "te_acc": 0.92813,
+      "te_auc": 0.97787
+    },
+    {
+      "epoch": 10,
+      "tr_loss": 0.06312,
+      "tr_acc": 0.97765,
+      "val_loss": 0.67493,
+      "val_acc": 0.8019,
+      "val_auc": 0.93568,
+      "te_loss": 0.1931,
+      "te_acc": 0.93287,
+      "te_auc": 0.98236
+    },
+    {
+      "epoch": 11,
+      "tr_loss": 0.05831,
+      "tr_acc": 0.9794,
+      "val_loss": 0.61256,
+      "val_acc": 0.8372,
+      "val_auc": 0.93089,
+      "te_loss": 0.2082,
+      "te_acc": 0.93613,
+      "te_auc": 0.97893
+    },
+    {
+      "epoch": 12,
+      "tr_loss": 0.0514,
+      "tr_acc": 0.9818,
+      "val_loss": 0.68784,
+      "val_acc": 0.8147,
+      "val_auc": 0.94282,
+      "te_loss": 0.16663,
+      "te_acc": 0.94487,
+      "te_auc": 0.98642
+    },
+    {
+      "epoch": 13,
+      "tr_loss": 0.04774,
+      "tr_acc": 0.98322,
+      "val_loss": 0.73855,
+      "val_acc": 0.8079,
+      "val_auc": 0.94433,
+      "te_loss": 0.16751,
+      "te_acc": 0.94707,
+      "te_auc": 0.98732
+    },
+    {
+      "epoch": 14,
+      "tr_loss": 0.04411,
+      "tr_acc": 0.98432,
+      "val_loss": 0.66437,
+      "val_acc": 0.8213,
+      "val_auc": 0.94189,
+      "te_loss": 0.16455,
+      "te_acc": 0.9466,
+      "te_auc": 0.98665
+    },
+    {
+      "epoch": 15,
+      "tr_loss": 0.04273,
+      "tr_acc": 0.98495,
+      "val_loss": 0.60301,
+      "val_acc": 0.8395,
+      "val_auc": 0.94466,
+      "te_loss": 0.16163,
+      "te_acc": 0.949,
+      "te_auc": 0.98692
+    }
+  ],
+  "args": {
+    "backbone": "resnet18",
+    "epochs": 15,
+    "batch_size": 256,
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "lr_sched": "cosine",
+    "color_aug": false,
+    "subsample": null
+  }
+}

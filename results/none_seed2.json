@@ -1,0 +1,187 @@
+{
+  "method": "none",
+  "seed": 2,
+  "best_epoch": 1,
+  "val_acc": 0.857,
+  "val_auc": 0.93664,
+  "test_acc": 0.83307,
+  "test_auc": 0.90329,
+  "runtime_s": 332.7,
+  "history": [
+    {
+      "epoch": 1,
+      "tr_loss": 0.18504,
+      "tr_acc": 0.93165,
+      "val_loss": 0.51447,
+      "val_acc": 0.857,
+      "val_auc": 0.93664,
+      "te_loss": 0.47363,
+      "te_acc": 0.83307,
+      "te_auc": 0.90329
+    },
+    {
+      "epoch": 2,
+      "tr_loss": 0.11118,
+      "tr_acc": 0.95945,
+      "val_loss": 0.81542,
+      "val_acc": 0.7839,
+      "val_auc": 0.88789,
+      "te_loss": 0.54753,
+      "te_acc": 0.79533,
+      "te_auc": 0.87843
+    },
+    {
+      "epoch": 3,
+      "tr_loss": 0.09499,
+      "tr_acc": 0.9657,
+      "val_loss": 1.10727,
+      "val_acc": 0.7925,
+      "val_auc": 0.89452,
+      "te_loss": 1.94534,
+      "te_acc": 0.53327,
+      "te_auc": 0.58476
+    },
+    {
+      "epoch": 4,
+      "tr_loss": 0.08619,
+      "tr_acc": 0.96857,
+      "val_loss": 0.84592,
+      "val_acc": 0.7899,
+      "val_auc": 0.87046,
+      "te_loss": 0.91733,
+      "te_acc": 0.7268,
+      "te_auc": 0.81607
+    },
+    {
+      "epoch": 5,
+      "tr_loss": 0.07442,
+      "tr_acc": 0.9736,
+      "val_loss": 0.83388,
+      "val_acc": 0.7229,
+      "val_auc": 0.80911,
+      "te_loss": 1.69044,
+      "te_acc": 0.53833,
+      "te_auc": 0.61816
+    },
+    {
+      "epoch": 6,
+      "tr_loss": 0.07214,
+      "tr_acc": 0.97438,
+      "val_loss": 1.16393,
+      "val_acc": 0.6991,
+      "val_auc": 0.75902,
+      "te_loss": 1.38789,
+      "te_acc": 0.62267,
+      "te_auc": 0.69436
+    },
+    {
+      "epoch": 7,
+      "tr_loss": 0.06434,
+      "tr_acc": 0.97742,
+      "val_loss": 0.87115,
+      "val_acc": 0.7522,
+      "val_auc": 0.8229,
+      "te_loss": 0.99657,
+      "te_acc": 0.68047,
+      "te_auc": 0.82513
+    },
+    {
+      "epoch": 8,
+      "tr_loss": 0.05916,
+      "tr_acc": 0.97947,
+      "val_loss": 0.88669,
+      "val_acc": 0.7604,
+      "val_auc": 0.85823,
+      "te_loss": 1.28702,
+      "te_acc": 0.56347,
+      "te_auc": 0.57194
+    },
+    {
+      "epoch": 9,
+      "tr_loss": 0.05545,
+      "tr_acc": 0.98072,
+      "val_loss": 1.12828,
+      "val_acc": 0.6887,
+      "val_auc": 0.73822,
+      "te_loss": 1.47743,
+      "te_acc": 0.61013,
+      "te_auc": 0.69545
+    },
+    {
+      "epoch": 10,
+      "tr_loss": 0.04995,
+      "tr_acc": 0.98215,
+      "val_loss": 0.89077,
+      "val_acc": 0.732,
+      "val_auc": 0.80059,
+      "te_loss": 1.58692,
+      "te_acc": 0.58847,
+      "te_auc": 0.67886
+    },
+    {
+      "epoch": 11,
+      "tr_loss": 0.04525,
+      "tr_acc": 0.98373,
+      "val_loss": 1.1961,
+      "val_acc": 0.6566,
+      "val_auc": 0.72001,
+      "te_loss": 1.77331,
+      "te_acc": 0.58333,
+      "te_auc": 0.65339
+    },
+    {
+      "epoch": 12,
+      "tr_loss": 0.04049,
+      "tr_acc": 0.98593,
+      "val_loss": 1.30964,
+      "val_acc": 0.6031,
+      "val_auc": 0.71523,
+      "te_loss": 1.98744,
+      "te_acc": 0.6224,
+      "te_auc": 0.73121
+    },
+    {
+      "epoch": 13,
+      "tr_loss": 0.03808,
+      "tr_acc": 0.98638,
+      "val_loss": 1.12024,
+      "val_acc": 0.6834,
+      "val_auc": 0.75644,
+      "te_loss": 1.59363,
+      "te_acc": 0.65273,
+      "te_auc": 0.76378
+    },
+    {
+      "epoch": 14,
+      "tr_loss": 0.03435,
+      "tr_acc": 0.98827,
+      "val_loss": 1.39542,
+      "val_acc": 0.6112,
+      "val_auc": 0.70436,
+      "te_loss": 1.76245,
+      "te_acc": 0.658,
+      "te_auc": 0.75518
+    },
+    {
+      "epoch": 15,
+      "tr_loss": 0.03176,
+      "tr_acc": 0.98882,
+      "val_loss": 1.32111,
+      "val_acc": 0.6381,
+      "val_auc": 0.72337,
+      "te_loss": 1.83288,
+      "te_acc": 0.65553,
+      "te_auc": 0.75706
+    }
+  ],
+  "args": {
+    "backbone": "resnet18",
+    "epochs": 15,
+    "batch_size": 256,
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "lr_sched": "cosine",
+    "color_aug": false,
+    "subsample": null
+  }
+}

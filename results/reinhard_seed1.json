@@ -1,0 +1,187 @@
+{
+  "method": "reinhard",
+  "seed": 1,
+  "best_epoch": 13,
+  "val_acc": 0.8913,
+  "val_auc": 0.95298,
+  "test_acc": 0.93827,
+  "test_auc": 0.98708,
+  "runtime_s": 333.5,
+  "history": [
+    {
+      "epoch": 1,
+      "tr_loss": 0.23265,
+      "tr_acc": 0.9044,
+      "val_loss": 2.75462,
+      "val_acc": 0.5002,
+      "val_auc": 0.59139,
+      "te_loss": 2.5674,
+      "te_acc": 0.50227,
+      "te_auc": 0.80067
+    },
+    {
+      "epoch": 2,
+      "tr_loss": 0.13509,
+      "tr_acc": 0.94875,
+      "val_loss": 3.34536,
+      "val_acc": 0.5142,
+      "val_auc": 0.7685,
+      "te_loss": 3.40657,
+      "te_acc": 0.4946,
+      "te_auc": 0.43686
+    },
+    {
+      "epoch": 3,
+      "tr_loss": 0.11426,
+      "tr_acc": 0.95733,
+      "val_loss": 1.316,
+      "val_acc": 0.6692,
+      "val_auc": 0.91457,
+      "te_loss": 2.45737,
+      "te_acc": 0.6122,
+      "te_auc": 0.94652
+    },
+    {
+      "epoch": 4,
+      "tr_loss": 0.09868,
+      "tr_acc": 0.96328,
+      "val_loss": 0.60872,
+      "val_acc": 0.7747,
+      "val_auc": 0.90691,
+      "te_loss": 0.56302,
+      "te_acc": 0.7902,
+      "te_auc": 0.95945
+    },
+    {
+      "epoch": 5,
+      "tr_loss": 0.09012,
+      "tr_acc": 0.96678,
+      "val_loss": 3.49523,
+      "val_acc": 0.505,
+      "val_auc": 0.79174,
+      "te_loss": 3.39226,
+      "te_acc": 0.50247,
+      "te_auc": 0.53373
+    },
+    {
+      "epoch": 6,
+      "tr_loss": 0.08114,
+      "tr_acc": 0.97058,
+      "val_loss": 0.68291,
+      "val_acc": 0.8289,
+      "val_auc": 0.9457,
+      "te_loss": 1.04054,
+      "te_acc": 0.7862,
+      "te_auc": 0.97671
+    },
+    {
+      "epoch": 7,
+      "tr_loss": 0.07503,
+      "tr_acc": 0.97333,
+      "val_loss": 0.5174,
+      "val_acc": 0.8385,
+      "val_auc": 0.92126,
+      "te_loss": 0.65545,
+      "te_acc": 0.80947,
+      "te_auc": 0.89857
+    },
+    {
+      "epoch": 8,
+      "tr_loss": 0.06937,
+      "tr_acc": 0.976,
+      "val_loss": 1.1285,
+      "val_acc": 0.554,
+      "val_auc": 0.90609,
+      "te_loss": 1.0684,
+      "te_acc": 0.52667,
+      "te_auc": 0.90356
+    },
+    {
+      "epoch": 9,
+      "tr_loss": 0.06561,
+      "tr_acc": 0.97695,
+      "val_loss": 0.87015,
+      "val_acc": 0.7917,
+      "val_auc": 0.87698,
+      "te_loss": 1.36383,
+      "te_acc": 0.71793,
+      "te_auc": 0.83295
+    },
+    {
+      "epoch": 10,
+      "tr_loss": 0.05811,
+      "tr_acc": 0.97962,
+      "val_loss": 0.83852,
+      "val_acc": 0.7763,
+      "val_auc": 0.92661,
+      "te_loss": 0.47769,
+      "te_acc": 0.837,
+      "te_auc": 0.93213
+    },
+    {
+      "epoch": 11,
+      "tr_loss": 0.0522,
+      "tr_acc": 0.98153,
+      "val_loss": 1.93871,
+      "val_acc": 0.6751,
+      "val_auc": 0.89089,
+      "te_loss": 0.63568,
+      "te_acc": 0.82393,
+      "te_auc": 0.93166
+    },
+    {
+      "epoch": 12,
+      "tr_loss": 0.04741,
+      "tr_acc": 0.98303,
+      "val_loss": 1.18813,
+      "val_acc": 0.7978,
+      "val_auc": 0.89759,
+      "te_loss": 0.58385,
+      "te_acc": 0.86813,
+      "te_auc": 0.93595
+    },
+    {
+      "epoch": 13,
+      "tr_loss": 0.04308,
+      "tr_acc": 0.9843,
+      "val_loss": 0.39569,
+      "val_acc": 0.8913,
+      "val_auc": 0.95298,
+      "te_loss": 0.18783,
+      "te_acc": 0.93827,
+      "te_auc": 0.98708
+    },
+    {
+      "epoch": 14,
+      "tr_loss": 0.03987,
+      "tr_acc": 0.98598,
+      "val_loss": 0.61595,
+      "val_acc": 0.8601,
+      "val_auc": 0.92968,
+      "te_loss": 0.34688,
+      "te_acc": 0.9014,
+      "te_auc": 0.96271
+    },
+    {
+      "epoch": 15,
+      "tr_loss": 0.03714,
+      "tr_acc": 0.98668,
+      "val_loss": 0.44846,
+      "val_acc": 0.8877,
+      "val_auc": 0.9451,
+      "te_loss": 0.21534,
+      "te_acc": 0.92807,
+      "te_auc": 0.98307
+    }
+  ],
+  "args": {
+    "backbone": "resnet18",
+    "epochs": 15,
+    "batch_size": 256,
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "lr_sched": "cosine",
+    "color_aug": false,
+    "subsample": null
+  }
+}

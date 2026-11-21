@@ -1,0 +1,187 @@
+{
+  "method": "ot_unbal",
+  "seed": 1,
+  "best_epoch": 12,
+  "val_acc": 0.8938,
+  "val_auc": 0.95484,
+  "test_acc": 0.94793,
+  "test_auc": 0.98589,
+  "runtime_s": 333.2,
+  "history": [
+    {
+      "epoch": 1,
+      "tr_loss": 0.22175,
+      "tr_acc": 0.91402,
+      "val_loss": 0.38578,
+      "val_acc": 0.8419,
+      "val_auc": 0.92953,
+      "te_loss": 0.42165,
+      "te_acc": 0.82547,
+      "te_auc": 0.91077
+    },
+    {
+      "epoch": 2,
+      "tr_loss": 0.15088,
+      "tr_acc": 0.94388,
+      "val_loss": 0.44391,
+      "val_acc": 0.8654,
+      "val_auc": 0.92361,
+      "te_loss": 0.58067,
+      "te_acc": 0.82107,
+      "te_auc": 0.95492
+    },
+    {
+      "epoch": 3,
+      "tr_loss": 0.12634,
+      "tr_acc": 0.95253,
+      "val_loss": 0.94981,
+      "val_acc": 0.7918,
+      "val_auc": 0.86192,
+      "te_loss": 0.4682,
+      "te_acc": 0.84687,
+      "te_auc": 0.94669
+    },
+    {
+      "epoch": 4,
+      "tr_loss": 0.1125,
+      "tr_acc": 0.95813,
+      "val_loss": 1.09867,
+      "val_acc": 0.6905,
+      "val_auc": 0.92738,
+      "te_loss": 0.55819,
+      "te_acc": 0.80467,
+      "te_auc": 0.96555
+    },
+    {
+      "epoch": 5,
+      "tr_loss": 0.10444,
+      "tr_acc": 0.96233,
+      "val_loss": 0.80982,
+      "val_acc": 0.7929,
+      "val_auc": 0.84114,
+      "te_loss": 0.25656,
+      "te_acc": 0.914,
+      "te_auc": 0.96849
+    },
+    {
+      "epoch": 6,
+      "tr_loss": 0.09575,
+      "tr_acc": 0.96495,
+      "val_loss": 0.95097,
+      "val_acc": 0.6623,
+      "val_auc": 0.88314,
+      "te_loss": 0.62861,
+      "te_acc": 0.70053,
+      "te_auc": 0.95507
+    },
+    {
+      "epoch": 7,
+      "tr_loss": 0.08805,
+      "tr_acc": 0.96788,
+      "val_loss": 0.80191,
+      "val_acc": 0.7886,
+      "val_auc": 0.90141,
+      "te_loss": 0.34291,
+      "te_acc": 0.8656,
+      "te_auc": 0.97385
+    },
+    {
+      "epoch": 8,
+      "tr_loss": 0.07893,
+      "tr_acc": 0.97197,
+      "val_loss": 0.51715,
+      "val_acc": 0.8656,
+      "val_auc": 0.92319,
+      "te_loss": 0.18019,
+      "te_acc": 0.9364,
+      "te_auc": 0.98175
+    },
+    {
+      "epoch": 9,
+      "tr_loss": 0.07402,
+      "tr_acc": 0.97315,
+      "val_loss": 0.51709,
+      "val_acc": 0.8608,
+      "val_auc": 0.93439,
+      "te_loss": 0.23007,
+      "te_acc": 0.92233,
+      "te_auc": 0.97665
+    },
+    {
+      "epoch": 10,
+      "tr_loss": 0.06584,
+      "tr_acc": 0.97628,
+      "val_loss": 0.95574,
+      "val_acc": 0.7993,
+      "val_auc": 0.87917,
+      "te_loss": 0.32077,
+      "te_acc": 0.8828,
+      "te_auc": 0.96177
+    },
+    {
+      "epoch": 11,
+      "tr_loss": 0.05927,
+      "tr_acc": 0.97893,
+      "val_loss": 0.38677,
+      "val_acc": 0.8891,
+      "val_auc": 0.9512,
+      "te_loss": 0.17386,
+      "te_acc": 0.94187,
+      "te_auc": 0.98302
+    },
+    {
+      "epoch": 12,
+      "tr_loss": 0.05417,
+      "tr_acc": 0.98033,
+      "val_loss": 0.37881,
+      "val_acc": 0.8938,
+      "val_auc": 0.95484,
+      "te_loss": 0.16516,
+      "te_acc": 0.94793,
+      "te_auc": 0.98589
+    },
+    {
+      "epoch": 13,
+      "tr_loss": 0.04946,
+      "tr_acc": 0.98253,
+      "val_loss": 0.53207,
+      "val_acc": 0.8613,
+      "val_auc": 0.94953,
+      "te_loss": 0.17576,
+      "te_acc": 0.94253,
+      "te_auc": 0.98327
+    },
+    {
+      "epoch": 14,
+      "tr_loss": 0.04629,
+      "tr_acc": 0.983,
+      "val_loss": 0.44856,
+      "val_acc": 0.8735,
+      "val_auc": 0.95372,
+      "te_loss": 0.17794,
+      "te_acc": 0.9404,
+      "te_auc": 0.98263
+    },
+    {
+      "epoch": 15,
+      "tr_loss": 0.04334,
+      "tr_acc": 0.98423,
+      "val_loss": 0.43452,
+      "val_acc": 0.8802,
+      "val_auc": 0.95439,
+      "te_loss": 0.16257,
+      "te_acc": 0.9468,
+      "te_auc": 0.98496
+    }
+  ],
+  "args": {
+    "backbone": "resnet18",
+    "epochs": 15,
+    "batch_size": 256,
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "lr_sched": "cosine",
+    "color_aug": false,
+    "subsample": null
+  }
+}
