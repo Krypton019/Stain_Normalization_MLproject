@@ -115,23 +115,84 @@ def load_or_create_reference(
     return normalizer
 
 
+def _make_he_patch(
+    rng: np.random.Generator,
+    W: np.ndarray,
+    label: int,
+    size: int = 96,
+    n_nuclei: int = 12,
+) -> np.ndarray:
+    """Synthesise a realistic-looking H&E patch with circular nuclei blobs.
+
+    Uses the Beer-Lambert model (OD = H @ W.T) with spatially structured
+    concentration maps so patches look like tissue rather than uniform noise.
+    Tumour patches (label=1) have denser, more intensely stained nuclei.
+    """
+    H_map = np.zeros((size, size, 2), dtype=np.float64)
+
+    # Background: low uniform hematoxylin + eosin (eosin-pink cytoplasm)
+    H_map[:, :, 0] = rng.gamma(0.4, 0.15, (size, size))   # H — light background
+    H_map[:, :, 1] = rng.gamma(1.2, 0.20, (size, size))   # E — pink cytoplasm
+
+    # Nuclei: dense circular blobs with high H, low E
+    n_nuc = n_nuclei + (6 if label == 1 else 0)
+    r_range = (4, 9) if label == 1 else (3, 7)
+    for _ in range(n_nuc):
+        cy = rng.integers(10, size - 10)
+        cx = rng.integers(10, size - 10)
+        radius = rng.integers(*r_range)
+        intensity_H = rng.uniform(1.8, 3.2) if label == 1 else rng.uniform(1.2, 2.2)
+        ys_idx, xs_idx = np.ogrid[:size, :size]
+        mask_nuc = (ys_idx - cy) ** 2 + (xs_idx - cx) ** 2 <= radius ** 2
+        H_map[:, :, 0][mask_nuc] += intensity_H
+        H_map[:, :, 1][mask_nuc] *= 0.3   # nuclei suppress eosin
+
+    H_map = np.clip(H_map, 0.0, None)
+    od = H_map.reshape(-1, 2) @ W.T
+    return gw_utils.od_to_rgb(od.reshape(size, size, 3))
+
+
 def generate_pilot_subset(output_dir: Path, n_per_hosp: int = 50, seed: int = 0) -> None:
-    """Generate reproducible pilot H&E patches across 5 hospitals."""
+    """Generate reproducible pilot H&E patches across 5 hospitals.
+
+    Each hospital has a distinctly different stain matrix so that cross-hospital
+    stain shift is clearly visible and GW normalisation has meaningful work to do.
+    Patches contain synthetic nuclei blobs (not uniform noise) so structural
+    metrics (EPI, SSIM) are informative.
+    """
     output_dir.mkdir(parents=True, exist_ok=True)
     rng = np.random.default_rng(seed)
 
+    # Stain matrices are deliberately spread wide across the OD colour space
+    # so that inter-hospital colour shift is clearly visible.
+    # Columns: [Hematoxylin direction, Eosin direction] in RGB optical-density space.
     hosp_W = {
-        0: np.array([[0.65, 0.07], [0.70, 0.99], [0.29, 0.11]]),
-        1: np.array([[0.60, 0.10], [0.72, 0.95], [0.35, 0.20]]),
-        2: np.array([[0.55, 0.20], [0.75, 0.80], [0.37, 0.56]]),
-        3: np.array([[0.68, 0.05], [0.68, 0.98], [0.25, 0.12]]),
-        4: np.array([[0.58, 0.15], [0.73, 0.90], [0.34, 0.35]]),
+        # Hospital 0: standard H&E (reference-like, purple-blue nuclei, pink cytoplasm)
+        0: np.array([[0.644, 0.093],
+                     [0.717, 0.954],
+                     [0.267, 0.283]]),
+        # Hospital 1: strong eosin, weak hematoxylin (very pink slides)
+        1: np.array([[0.490, 0.070],
+                     [0.830, 0.980],
+                     [0.265, 0.180]]),
+        # Hospital 2: heavy hematoxylin, greenish tint (deep purple-green slides)
+        2: np.array([[0.380, 0.280],
+                     [0.740, 0.650],
+                     [0.550, 0.710]]),
+        # Hospital 3: low-contrast, pale staining (washed-out slides)
+        3: np.array([[0.720, 0.050],
+                     [0.650, 0.990],
+                     [0.230, 0.090]]),
+        # Hospital 4: shifted hue towards brown-orange (over-fixed tissue)
+        4: np.array([[0.550, 0.200],
+                     [0.700, 0.820],
+                     [0.450, 0.530]]),
     }
 
     splits = {
         "train": ([0, 3, 4], n_per_hosp),
-        "val":   ([1], n_per_hosp),
-        "test":  ([2], n_per_hosp * 2),
+        "val":   ([1],       n_per_hosp),
+        "test":  ([2],       n_per_hosp * 2),
     }
 
     for split_name, (hospitals, n_h) in splits.items():
@@ -141,9 +202,7 @@ def generate_pilot_subset(output_dir: Path, n_per_hosp: int = 50, seed: int = 0)
             W = hosp_W[h] / np.linalg.norm(hosp_W[h], axis=0)
             for i in range(n_h):
                 y = i % 2
-                scale = 1.3 if y == 1 else 0.8
-                H = scale * rng.gamma(2.0, 0.3, (96 * 96, 2))
-                patch = gw_utils.od_to_rgb((H @ W.T).reshape(96, 96, 3))
+                patch = _make_he_patch(rng, W, label=y)
                 Xs.append(patch)
                 ys.append(y)
                 hs.append(h)
